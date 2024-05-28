@@ -1,1 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anti-Wrinkle Treatment Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Arimo', sans-serif;
+            background-color: rgba(183, 110, 121, 0.33);
+            color: #333;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .box {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .box h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .product-select, #client-details, #selection-box, #result, #cost-result, #cta, #note {
+            text-align: center;
+        }
+        .product-select {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        .product-select button {
+            padding: 10px 20px;
+            background: #b76e79;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.3s;
+            margin: 0 10px;
+        }
+        .product-select button.greyed-out {
+            background: #ccc;
+            color: #666;
+        }
+        .product-select button.selected {
+            background: #a65e69;
+        }
+        .area-label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .area-label input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .input-field {
+            margin-bottom: 10px;
+        }
+        .input-field label {
+            display: block;
+            text-align: left;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .input-field input {
+            width: calc(100% - 20px);
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .input-field button {
+            padding: 10px 20px;
+            margin: 5px;
+            background: #b76e79;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .input-field button.selected {
+            background: #25d366;
+            color: #fff;
+        }
+        #result, #cost-result, #cta {
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .cta-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #25d366;
+            color: #fff;
+            font-size: 16px;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background 0.3s;
+            cursor: not-allowed;
+            margin: 5px;
+        }
+        .cta-button.enabled {
+            background: #25d366;
+            cursor: pointer;
+        }
+        .cta-button.enabled:hover {
+            background: #1ebd54;
+        }
+        .email-button {
+            background: #0078d4;
+        }
+        .email-button:hover {
+            background: #005bb5;
+        }
+        .warning {
+            color: red;
+        }
+        #note {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #777;
+            text-align: left;
+        }
+        .selected {
+            background: #25d366;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>Anti-Wrinkle Treatment Calculator</h1>
 
+        <div class="box" id="client-details">
+            <h2>Client Details</h2>
+            <div class="input-field">
+                <label for="client_name">Name</label>
+                <input type="text" id="client_name" placeholder="Enter your name" oninput="checkDetails()">
+            </div>
+            <div class="input-field">
+                <label for="client_email">Email</label>
+                <input type="email" id="client_email" placeholder="Enter your email" oninput="checkDetails()">
+            </div>
+            <div class="input-field">
+                <label for="client_mobile">Mobile Number</label>
+                <input type="tel" id="client_mobile" placeholder="Enter your mobile number" oninput="checkDetails()">
+            </div>
+            <div class="input-field">
+                <label>Are you over 18 years old?</label>
+                <div>
+                    <button type="button" id="over_18_yes" onclick="selectOver18(true)">Yes</button>
+                    <button type="button" id="over_18_no" onclick="selectOver18(false)">No</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="box product-select">
+            <h2>Select Product</h2>
+            <button type="button" id="allergan-btn" onclick="selectProduct('allergan')">Allergan</button>
+            <button type="button" id="bocouture-btn" onclick="selectProduct('bocouture')">Bocouture</button>
+        </div>
+
+        <div class="box" id="selection-box">
+            <h2>Select Treatment Areas</h2>
+            <div class="area-label">
+                <input type="checkbox" id="frown_lines" name="area" value="Frown Lines (20-30 units)" onchange="toggleArea('frown_lines')">
+                <label for="frown_lines">Frown Lines (20-30 units)</label>
+            </div>
+            <div class="area-label">
+                <input type="checkbox" id="crows_feet" name="area" value="Crows Feet (12-24 units)" onchange="toggleArea('crows_feet')">
+                <label for="crows_feet">Crows Feet (12-24 units)</label>
+            </div>
+            <div class="area-label">
+                <input type="checkbox" id="forehead_lines" name="area" value="Forehead Lines (10-30 units)" onchange="toggleArea('forehead_lines')">
+                <label for="forehead_lines">Forehead Lines (10-30 units)</label>
+            </div>
+            <div class="area-label">
+                <input type="checkbox" id="bunny_lines" name="area" value="Bunny Lines (4-10 units)" onchange="toggleArea('bunny_lines')">
+                <label for="bunny_lines">Bunny Lines (4-10 units)</label>
+            </div>
+            <div class="area-label">
+                <input type="checkbox" id="gummy_smile" name="area" value="Gummy Smile (2-4 units)" onchange="toggleArea('gummy_smile')">
+                <label for="gummy_smile">Gummy Smile (2-4 units)</label>
+            </div>
+            <div class="area-label">
+                <input type="checkbox" id="brow_lift" name="area" value="Brow Lift (2-5 units)" onchange="toggleArea('brow_lift')">
+                <label for="brow_lift">Brow Lift (2-5 units)</label>
+            </div>
+            <div class="area-label">
+                <input type="checkbox" id="platysmal_bands" name="area" value="Platysmal Bands (20-50 units)" onchange="toggleArea('platysmal_bands')">
+                <label for="platysmal_bands">Platysmal Bands (20-50 units)</label>
+            </div>
+            <div class="area-label">
+                <input type="checkbox" id="jawline_slimming" name="area" value="Jawline Slimming (40-60 units)" onchange="toggleArea('jawline_slimming')">
+                <label for="jawline_slimming">Jawline Slimming (40-60 units)</label>
+            </div>
+            <div class="area-label">
+                <input type="checkbox" id="chin_dimpling" name="area" value="Chin Dimpling (2-6 units)" onchange="toggleArea('chin_dimpling')">
+                <label for="chin_dimpling">Chin Dimpling (2-6 units)</label>
+            </div>
+            <div class="area-label">
+                <input type="checkbox" id="lip_flip" name="area" value="Lip Flip (2-4 units)" onchange="toggleArea('lip_flip')">
+                <label for="lip_flip">Lip Flip (2-4 units)</label>
+            </div>
+            <div class="area-label">
+                <input type="checkbox" id="excessive_sweat" name="area" value="Excessive Sweat (100 units)" onchange="toggleArea('excessive_sweat')">
+                <label for="excessive_sweat">Excessive Sweat (100 units)</label>
+            </div>
+        </div>
+
+        <div class="box" id="result">Please select at least one treatment area.</div>
+        <div class="box" id="cost-result"></div>
+        <div class="box" id="cta">
+            <a id="cta-button" href="#" target="_blank" class="cta-button">Schedule your consultation now</a>
+            <a id="email-button" href="#" target="_blank" class="cta-button email-button">Send Consultation Request via Email</a>
+        </div>
+        <div class="box" id="note">
+            Prices are estimated and subject to consultation with the practitioner. Estimates include a consultation, practitioner, and prescription fee. IF your consultation proceeds to treatment, the consultation will be deducted from your final treatment price.
+        </div>
+
+        <div class="box" id="underage-warning" style="display:none;">
+            We respectfully decline to provide an estimate as botulinum toxins can only be prescribed to individuals over 18 years old.
+        </div>
+    </div>
+
+    <script>
+        let selectedProduct = '';
+        const selectedAreas = {};
+
+        function selectProduct(product) {
+            selectedProduct = product;
+            document.getElementById('allergan-btn').classList.remove('selected', 'greyed-out');
+            document.getElementById('bocouture-btn').classList.remove('selected', 'greyed-out');
+
+            if (product === 'allergan') {
+                document.getElementById('allergan-btn').classList.add('selected');
+                document.getElementById('bocouture-btn').classList.add('greyed-out');
+            } else if (product === 'bocouture') {
+                document.getElementById('bocouture-btn').classList.add('selected');
+                document.getElementById('allergan-btn').classList.add('greyed-out');
+            }
+
+            calculateVial(); // Recalculate when the product is selected
+        }
+
+        const dosage = {
+            frown_lines: 30,
+            crows_feet: 24,
+            forehead_lines: 30,
+            bunny_lines: 10,
+            gummy_smile: 4,
+            brow_lift: 5,
+            platysmal_bands: 50,
+            jawline_slimming: 60,
+            chin_dimpling: 6,
+            lip_flip: 4,
+            excessive_sweat: 100
+        };
+
+        const costs = {
+            allergan: { 50: 90, 100: 160 },
+            bocouture: { 50: 70, 100: 140 },
+            fixed: 25,
+            insurance: 10
+        };
+
+        function toggleArea(areaId) {
+            const areaElement = document.getElementById(areaId);
+            if (selectedAreas[areaId]) {
+                delete selectedAreas[areaId];
+                areaElement.classList.remove('selected');
+            } else {
+                selectedAreas[areaId] = areaElement.value;
+                areaElement.classList.add('selected');
+            }
+            calculateVial();
+        }
+
+        function calculateVial() {
+            if (!selectedProduct) {
+                document.getElementById('result').innerText = 'Please select a product (Allergan or Bocouture).';
+                document.getElementById('cost-result').innerText = '';
+                return;
+            }
+
+            let totalUnits = 0;
+            let resultText = '';
+            let warningText = '';
+            let totalCost = 0;
+            let selectedAreasList = [];
+
+            for (const area in selectedAreas) {
+                totalUnits += dosage[area];
+                selectedAreasList.push(selectedAreas[area]);
+            }
+
+            if (totalUnits === 0) {
+                resultText = 'Please select at least one treatment area.';
+                document.getElementById('cost-result').innerText = '';
+            } else {
+                const vialSize = totalUnits <= 50 ? 50 : 100;
+                totalCost = costs[selectedProduct][vialSize] + costs.fixed * 2 + costs.insurance;
+
+                resultText = `Total units required: ${totalUnits}. You will need a ${vialSize} unit vial.`;
+                document.getElementById('cost-result').innerText = `Estimated cost: £${totalCost}.`;
+
+                if (totalUnits > 100) {
+                    warningText = 'The maximum clinical dose is recommended to be no more than 100 units, please discuss this with your practitioner.';
+                }
+            }
+
+            document.getElementById('result').innerHTML = resultText + (warningText ? `<p class="warning">${warningText}</p>` : '');
+
+            checkDetails();
+
+            // Update WhatsApp message with selected areas and client details
+            const areasString = selectedAreasList.join(', ');
+            const clientName = document.getElementById('client_name').value;
+            const clientEmail = document.getElementById('client_email').value;
+            const clientMobile = document.getElementById('client_mobile').value;
+            const whatsappMessage = `Hi, please could we schedule a consultation to discuss anti-wrinkle treatment for the following areas: ${areasString}. Client details: Name - ${clientName}, Email - ${clientEmail}, Mobile - ${clientMobile}`;
+            document.getElementById('cta-button').href = `https://wa.me/447766766152?text=${encodeURIComponent(whatsappMessage)}`;
+
+            // Update Email link with the same message
+            const emailSubject = 'Consultation Request';
+            const emailBody = encodeURIComponent(whatsappMessage);
+            document.getElementById('email-button').href = `mailto:rl.aesthetx@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${emailBody}`;
+        }
+
+        function selectOver18(isOver18) {
+            over18 = isOver18;
+            document.getElementById('over_18_yes').classList.remove('selected');
+            document.getElementById('over_18_no').classList.remove('selected');
+            if (isOver18) {
+                document.getElementById('over_18_yes').classList.add('selected');
+            } else {
+                document.getElementById('over_18_no').classList.add('selected');
+            }
+            checkDetails();
+        }
+
+        function checkDetails() {
+            const clientName = document.getElementById('client_name').value;
+            const clientEmail = document.getElementById('client_email').value;
+            const clientMobile = document.getElementById('client_mobile').value;
+            const ctaButton = document.getElementById('cta-button');
+            const emailButton = document.getElementById('email-button');
+            const underageWarning = document.getElementById('underage-warning');
+
+            if (over18 === false) {
+                ctaButton.classList.remove('enabled');
+                ctaButton.classList.add('disabled');
+                ctaButton.style.cursor = 'not-allowed';
+
+                emailButton.classList.remove('enabled');
+                emailButton.classList.add('disabled');
+                emailButton.style.cursor = 'not-allowed';
+
+                underageWarning.style.display = 'block';
+                return;
+            } else {
+                underageWarning.style.display = 'none';
+            }
+
+            if (clientName && clientEmail && clientMobile && selectedProduct && Object.keys(selectedAreas).length > 0 && over18 === true) {
+                ctaButton.classList.add('enabled');
+                ctaButton.classList.remove('disabled');
+                ctaButton.style.cursor = 'pointer';
+
+                emailButton.classList.add('enabled');
+                emailButton.classList.remove('disabled');
+                emailButton.style.cursor = 'pointer';
+            } else {
+                ctaButton.classList.remove('enabled');
+                ctaButton.classList.add('disabled');
+                ctaButton.style.cursor = 'not-allowed';
+
+                emailButton.classList.remove('enabled');
+                emailButton.classList.add('disabled');
+                emailButton.style.cursor = 'not-allowed';
+            }
+        }
+    </script>
+</body>
+</html>
